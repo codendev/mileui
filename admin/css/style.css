@@ -1,0 +1,88 @@
+/**
+ * MileFramwork
+ *
+ * Web Framework for PHP 5.2 or newer
+ *
+ * Licensed under GPL
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @package		MileFramework
+ * @author		Shahrukh Hussain
+ * @copyright           Copyright (c) 2011 - 2012, Abydeen Business Consulting.
+ * @license		http://www.gnu.org/licenses/gpl.txt
+ * @link		http://www.mileframework.com
+ * @since		Version 1.0
+ * @filesource
+ */
+html, body {
+    background-color: #DAECFA;
+    height: 100%;
+    position: absolute;
+    width: 100%;
+}
+.fixed_width {
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 3px;
+    width: 984px;
+}
+.columns {
+    background-image: url("../images/faux_columns.png");
+    min-height: 100%;
+}
+#content {
+    margin-left: 164px;
+    width: 820px;
+}
+#nav {
+    list-style: none outside none;
+    margin: 0;
+    padding: 10px 0;
+    position: fixed;
+    top: 45px;
+    width: 163px;
+}
+#sub-nav {
+    bottom: 0;
+    list-style: none outside none;
+    margin: 0;
+    position: fixed;
+    width: 163px;
+}
+#toolbar {
+    background-color: #888888;
+    height: 45px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+}
+.menu_bar {
+    float: right;
+}
+h1 {
+    background: url("../images/list_view.png") no-repeat scroll left bottom transparent;
+    padding: 55px 0 10px 10px;
+}
+h2 {
+    display: none;
+}
+.menu_bar h2 {
+    display: block;
+}
+.menu_bar > li {
+    display: block;
+    float: left;
+    margin: 0;
+    position: relative;
+}
+.menu_bar ul {
+    position: absolute;
+    right: -9999px;
+}
+.menu_bar ul a {
+    display: block;
+    white-space: nowrap;
+}
+.menu_bar li:hover ul {
+    right: 0;
+}
