@@ -19,8 +19,8 @@ class EventLog implements IObserver{
 
       public function update(IObservable $subject_in) {
 
-        //echo $args;
-        echo 'event log <br/>';
+       $hash=md5((!empty($_SERVER['HTTPS'])) ? "https://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'] : "http://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']);
+       $_SESSION["page"][$hash]=(!empty($_SERVER['HTTPS'])) ? "https://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'] : "http://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']; ;
 
      }
 

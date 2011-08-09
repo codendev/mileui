@@ -42,7 +42,6 @@ class View implements IObserver{
      public function compile($subject_in){
 
        extract($subject_in->data);
-      
        ob_start();
 
        require($subject_in->view);
@@ -50,7 +49,7 @@ class View implements IObserver{
        $applied_template = ob_get_contents();
        ob_end_clean();
 
-       $subject_in->me=$applied_template;
+       $subject_in->self=$applied_template;
 
     }
 

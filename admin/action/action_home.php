@@ -15,29 +15,51 @@
  * @since		Version 1.0
  * @filesource
  */
-class Action_Home{
+class Action_Home {
 
-    public function index(){
-        $data['test']="Hello World";
-        return 
-        array('data'=>$data,
-              'output'=>array('xml','view'),
-              'template'=>'view/user/test.php'
-            );
+    private $page;
+
+    public function  __construct($page) {
+
+        $this->page=$page;
+       
+    }
+      
+      
+    public function index() {
+         
+        $this->page->data['header']=$this->page->block->create(array('obj'=>'home','mtd'=>'header'));
+        $this->page->data['footer']=$this->page->block->create(array('obj'=>'home','mtd'=>'footer'));
+        
+       
+
+    }
+    public function login() {
+
+        $this->page->data['header']=$this->page->block->create(array('obj'=>'home','mtd'=>'header'));
+        $this->page->data['footer']=$this->page->block->create(array('obj'=>'home','mtd'=>'footer'));
+        if(!empty($_POST)) {
+            $usr= new User();
+            $usr->id=1;
+            $usr->username=$_POST["user"];
+            $this->page->set_state('user',$usr);
+            Util::redirect('home', 'index');
+        }
+        $this->page->view='view/home/login.php';
+        
+
+    }
+    public function logout() {
+        $this->page->unset_state('user');
+        Util::redirect('home', 'index');
+    }
+    public function header() {
 
 
     }
-    public function add(){
+    public function footer(){
 
-
-    }
-    public function update(){
-
-
-    }
-    public function grid(){
-
-
+        
     }
 
 }

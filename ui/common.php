@@ -20,10 +20,9 @@ class Common implements IObserver{
 
       public function update(IObservable $subject_in) {
 
-        //echo $args;
-        $subject_in->data['common']= array('nav'=>array('home','address'));
+      
 
-     }
+      }
 
 }
 ?>

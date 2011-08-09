@@ -20,9 +20,10 @@ function __autoload($class_name) {
     if (file_exists('connector/mysql/class.' . strtolower($class_name) . '.php')) {
         require 'connector/mysql/class.' . strtolower($class_name) . '.php';
     }
-    if (file_exists('base/' . strtolower($class_name) . '.php')) {
+    if (file_exists('../base/' . strtolower($class_name) . '.php')) {
 
-        require 'base/' . strtolower($class_name) . '.php';
+        require '../base/' . strtolower($class_name) . '.php';
+       
     }
 
     if (file_exists('../ui/' . strtolower($class_name) . '.php')) {

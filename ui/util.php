@@ -90,6 +90,10 @@ class Util {
         $table.="</table>";
 
     }
+     static function redirect($action,$method){
+        
+    header("location:?obj=$action&mtd=$method");
+    }
 
 
 

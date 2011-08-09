@@ -16,22 +16,38 @@
  * @filesource
  */
 
-class Action implements IObserver {
+class Session implements IObserver {
+
 
     public function update(IObservable $subject_in) {
 
-        $action=$this->dispatch($subject_in);
+        $this->createSession();
+        $this->setSession($subject_in);
+
+    }
+
+    private function createSession() {
+        @session_start();
+
+
+    }
+
+    public function setSession($obj) {
+
+      
+        if(!empty($obj->state)){
+             $_SESSION[key($obj->state)]=$obj->state[key($obj->state)];
+           
+        }
+      
+        foreach($_SESSION as $key=>$item){ 
+            if($item==NULL)
+                session_unregister($key);
+        }
      
+       
     }
-    private function dispatch($page) {
 
-        extract($page->args);
-        $ob='Action_'.ucfirst($obj);
-        $ins=new $ob($page);
-        return $ins->$mtd();
-
-
-    }
 
 
 

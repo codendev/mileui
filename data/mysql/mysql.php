@@ -255,13 +255,31 @@ class Mysql extends Factory {
 
             $this->query.=" ".$item." \n";
         }
-        echo $this->query;
+       // echo $this->query;
         $db->query($this->query);
         $class_name=get_class($this->base);
         $rows=$db->getRows();
 
+       // var_dump($this->obj);
+        $objectArray=array();
+       // $rows=array_unique($rows);
+        foreach($rows as $key=>$item){
 
+          
+          // $rows[$key][key($item)];
+            var_dump(key($rows));
+            $ci=key($item);
+            $c=new $ci;
+            $attrib=get_object_vars($c);
+            foreach($attrib as $vkey=>$var){
+                
+                $c->$vkey=$rows[$key][key($item)][$vkey];
+            }
+            $objectArray[md5(serialize($c))]=$c;
+        }
+        var_dump($objectArray);
 
+        
         return $rows;
 
     }

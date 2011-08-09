@@ -18,15 +18,29 @@
 
 require_once 'autoload.php';
 
+
+
 $page= new Page();
+$page->block= new Block();
 
-$page->attach(new Action());
-$page->attach(new Common());
-$page->attach(new EventLog());
-$page->attach(new View());
+$session=new Session();
+$action =new Action();
+$common=new Common();
+$eventLog= new EventLog();
+$view =new View();
 
-$page->create(Util::curPageURL());
+$page->block->attach($action);
+$page->block->attach($view);
 
-$page->publish();
+$page->attach($session);
+$page->attach($action);
+$page->attach($common);
+$page->attach($eventLog);
+$page->attach($view);
+$page->attach($session);
+
+
+$page->create();
+$page->publish(); 
 
 ?>

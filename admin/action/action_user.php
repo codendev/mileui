@@ -17,9 +17,18 @@
  */
 class Action_User{
 
-    public function test(){
-        $data['test']="Hello World";
-        return array('data'=>$data,'output'=>array('xml','php'));
+    public function index(){
+
+        $usr= new User();
+
+        $dbObj=FactoryMethod::data('mysql', $usr);
+
+       // $dbObj->getAll()
+        return array('data'=>$data,
+              'output'=>array('php','view'),
+              'template'=>'view/user/index.php'
+            );
+
 
 
     }

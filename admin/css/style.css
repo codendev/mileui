@@ -33,6 +33,7 @@ html, body {
 #content {
     margin-left: 164px;
     width: 820px;
+    margin-top:50px;
 }
 #nav {
     list-style: none outside none;

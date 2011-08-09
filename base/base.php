@@ -17,8 +17,9 @@
  */
 
 class Base{
-    //put your code here
+   
     public $id;
+    
 
     public function  __construct($name) {
             
