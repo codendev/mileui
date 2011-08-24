@@ -19,15 +19,15 @@ class Group extends Base {
     //put your code here
     public static $me;
     public $name;
-    public $object;
-    public $user;
+    public $user_group;
+    public $object_group;
   
 
     public function  __construct() {
 
         Group::$me['name']= new Type('name','',true,255,'text');
-        Group::$me['object']= new Reference('object','','object','group','onetomany');
-        Group::$me['user']= new Reference('user','','object','group','onetomany');
+        Group::$me['user_group']= new Reference('user_group','','user_group','group','onetomany');
+        Group::$me['object_group']= new Reference('object_group','','object_group','group','onetomany');
         
         parent::__construct($this);
 

@@ -23,6 +23,7 @@ require_once 'autoload.php';
 $page= new Page();
 $page->block= new Block();
 
+$fallback=new Fallback();
 $session=new Session();
 $action =new Action();
 $common=new Common();
@@ -32,6 +33,7 @@ $view =new View();
 $page->block->attach($action);
 $page->block->attach($view);
 
+$page->attach($fallback);
 $page->attach($session);
 $page->attach($action);
 $page->attach($common);

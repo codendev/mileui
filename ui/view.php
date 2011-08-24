@@ -21,12 +21,12 @@ class View implements IObserver{
 
     public function update(IObservable $subject_in) {
 
-     
+               
         if($subject_in->view==NULL)
         {
             $subject_in->view=$this->loadView($subject_in);
            
-        }
+        } 
          $this->compile($subject_in);
 
      }
@@ -34,7 +34,7 @@ class View implements IObserver{
      private function loadView($subject_in){
       
          extract($subject_in->args);
-         return  'view/'.strtolower($obj).'/'.strtolower($mtd).'.php';
+         return  'view/'.strtolower($action).'/'.strtolower($event).'.php';
 
      }
      

@@ -17,7 +17,7 @@
  */
 
 class Mysql extends Factory {
-   
+
 
     private $base;
     private $idColumnName="id";
@@ -27,6 +27,10 @@ class Mysql extends Factory {
     private $load=array();
     private $depth=0;
     private $level=0;
+    private $map=array();
+    private $start=0;
+    private $offset=1;
+    private $object_count=0;
 
 
 
@@ -170,6 +174,11 @@ class Mysql extends Factory {
         $rs=$db->query($sql);
 
     }
+    /**
+	 * @param id
+	 * @param column
+         * @return bool Returns true on success or false on failure.
+    */
     public function select($id,$column=null) {
         $db = Database::getDatabase();
         $attributes=get_object_vars($this->base);
@@ -189,7 +198,7 @@ class Mysql extends Factory {
 
         return false;
     }
-    public function chain($obj=null) {
+    private function chain($obj=null) {
 
         $this->level=$this->level+1;
         if($obj==null) {
@@ -200,14 +209,14 @@ class Mysql extends Factory {
 
         }
 
-        $this->obj[get_class($ref)]=get_class($ref);
+        $this->obj[strtolower(get_class($ref))]=get_class($ref);
         $attributes=get_object_vars($ref);
         $table=strtolower(get_class($ref));
 
         foreach($attributes as $key=>$name) {
 
 
-            if(@get_class($table::$me[$key])=='Reference'&&!isset($this->obj[ucfirst($table::$me[$key]->relation)])&&$this->level<$this->depth) {
+            if(@get_class($table::$me[$key])=='Reference'&&!isset($this->obj[strtolower($table::$me[$key]->relation)])&&$this->level<$this->depth) {
 
                 $this->createJoin($table::$me[$key],$table,$table::$me[$key]->map);
                 $ref=$table::$me[$key]->relation;
@@ -255,35 +264,215 @@ class Mysql extends Factory {
 
             $this->query.=" ".$item." \n";
         }
-       // echo $this->query;
+
+        if(isset($this->limit))
+            $this->query.=" ".$this->limit;
+
         $db->query($this->query);
         $class_name=get_class($this->base);
         $rows=$db->getRows();
 
-       // var_dump($this->obj);
+        // var_dump($this->obj);
         $objectArray=array();
-       // $rows=array_unique($rows);
-        foreach($rows as $key=>$item){
+        // $rows=array_unique($rows);
+        foreach($rows as $key=>$item) {
 
-          
-          // $rows[$key][key($item)];
-            var_dump(key($rows));
+
+            // $rows[$key][key($item)];
             $ci=key($item);
             $c=new $ci;
             $attrib=get_object_vars($c);
-            foreach($attrib as $vkey=>$var){
-                
+            foreach($attrib as $vkey=>$var) {
+
                 $c->$vkey=$rows[$key][key($item)][$vkey];
             }
             $objectArray[md5(serialize($c))]=$c;
         }
-        var_dump($objectArray);
+        //var_dump($objectArray);
 
-        
+
         return $rows;
 
     }
+    function object_count(){
 
+        return $this->object_count;
+    }
+    function count() {
+        $objs=array();
+        $table=strtolower(get_class($this->base));
+        if(count($this->load)==0) {
+
+            foreach($this->obj as $item) {
+                $this->load[]= "`".strtolower($item)."`.*";
+            }
+        }
+        $load=implode(',', $this->load);
+
+        $this->query="SELECT $load FROM `{$table}`";
+        $db = Database::getDatabase();
+        foreach($this->join as $item ) {
+
+            $this->query.=" ".$item." \n";
+        }
+        foreach($this->condition as $item ) {
+
+            $this->query.=" ".$item." \n";
+        }
+        $db->query($this->query);
+        return $db->numRows();
+    }
+    function object_compile() {
+
+        $objs=array();
+        $table=strtolower(get_class($this->base));
+        if(count($this->load)==0) {
+
+            foreach($this->obj as $item) {
+                $this->load[]= "`".strtolower($item)."`.*";
+            }
+        }
+        $load=implode(',', $this->load);
+
+        $this->query="SELECT $load FROM `{$table}`";
+        $db = Database::getDatabase();
+        foreach($this->join as $item ) {
+
+            $this->query.=" ".$item." \n";
+        }
+        foreach($this->condition as $item ) {
+
+            $this->query.=" ".$item." \n";
+        }
+       
+        $db->query($this->query);
+        $class_name=get_class($this->base);
+        $rows=$db->getRows();
+      
+       
+        // var_dump($this->obj);
+        $objectArray=array();
+        // $rows=array_unique($rows);
+        // var_dump($rows);;exit;
+        foreach($rows as $item) {
+
+            // var_dump($item); echo "<br><br>";
+
+        }
+        $obj=$this->mapping($this->base, $rows);
+        //  var_dump($obj);
+
+        $this->object_count=sizeof($obj);
+        if(isset($this->limit))
+        {
+         
+             $obj=array_slice($obj,$this->start,$this->offset);
+        }
+        return $obj;
+
+
+    }
+    function mapping($object,$resultset,$condition=null) {
+
+        $c= $object;
+        $objectArray=array();
+        $tempArray=array();
+        $name=strtolower(get_class($object));
+        $this->map[]=$name;
+        $this->map=array_unique($this->map);
+        $attrib=get_object_vars($c);
+        //if($name=="object"){  var_dump($condition);return null;}
+
+        foreach($resultset as $key=>$item) {
+            if(!array_key_exists($name, $resultset[$key])) {
+                return null;
+            }
+            foreach($attrib as $vkey=>$var) {
+
+
+                if(@get_class(@$c::$me[$vkey])=="Type") {
+
+
+                    if($condition!=NULL) {
+
+                        if($resultset[$key][$name][key($condition)]==$condition[key($condition)]) {
+                            $c->$vkey=$resultset[$key][$name][$vkey];
+                            if($name=="objectfield") {
+                                // var_dump($c);;
+                            }
+
+                        }else {
+                            if($name=="objectfield" and $c->name==null) {
+                                //    var_dump($c);;
+                            }
+                        }
+                    }
+                    else {
+
+                        $c->$vkey=$resultset[$key][$name][$vkey];
+                        if($name=="user" ) {
+                            //var_dump($c);;echo "<br><br>";
+
+                        }
+                    }
+
+                }
+                elseif(@get_class(@$c::$me[$vkey])=="Reference") {
+
+                    //
+                    //var_dump("Relation::".array_search($c::$me[$vkey]->relation, $this->map));
+                    if($c::$me[$vkey]->map=="onetoone"&& (in_array($c::$me[$vkey]->relation, $this->map)==false || array_search($c::$me[$vkey]->relation, $this->map)>array_search($name, $this->map))) {
+                        $cond1=array('id'=>$resultset[$key][$name][$vkey]);
+                        $ores=$this->mapping(new $vkey(), $resultset,$cond1);
+                        if(isset($ores[0])) {
+                            $c->$vkey=$ores[0];
+                           
+                        }
+                    }
+                    elseif($c::$me[$vkey]->map=="onetomany"&&(in_array($c::$me[$vkey]->relation, $this->map)==false || array_search($c::$me[$vkey]->relation, $this->map)>array_search($name, $this->map))) {
+
+                        $cond2=array($name=>$resultset[$key][$name]["id"]);
+
+                        $or=$this->mapping(new $c::$me[$vkey]->relation, $resultset,$cond2);
+
+                        $c->$vkey=$or;
+                        // if($c->$vkey==null){ echo $vkey;}
+                    }
+                    else{
+                       
+                        unset($c->$vkey);
+                    }
+
+
+
+
+                }
+
+            }  if
+
+
+
+            ($name=="objectfield" and $c->name==null) {
+                // var_dump($c);;
+
+            }
+            $id=$this->idColumnName;
+            $c_clone=clone $c;
+            if(!array_key_exists(md5($c_clone->id), $tempArray)&&$c->$id!=null) {
+                {
+                    $tempArray[md5($c_clone->id)]=md5(serialize( $c_clone));
+                    $objectArray[]= $c_clone;
+                }
+            }
+            // if($name=="object" ){  var_dump($objectArray[md5(serialize($c))]); echo "::".md5(serialize($c));echo "<br><br>";}
+            // if($name=="group"){ var_dump($objectArray); echo "<br><br>";}
+
+
+        }
+
+        //if($name=="object" ){  echo var_dump($objectArray);;echo "<br><br>";}
+        return $objectArray;
+    }
     function createJoin($rObject,$table,$type='onetoone') {
         if($type=='onetoone') {
             $this->join[]="left join `".$rObject->relation."` on ".$table.".".$rObject->name."=".$rObject->relation.".".$rObject->relationField;
@@ -318,10 +507,12 @@ class Mysql extends Factory {
 
         return $this;
     }
-    function limit($start=0,$offset='') {
+    function limit($start=0,$offset=1) {
 
-        $this->limit="limit $start, $offset";
-
+        $this->start=$start;
+        $this->offset=$offset;
+        $this->limit="limit ($start, $offset)";
+        return $this;
     }
     function condition($value,$type,$compare,$prefix=TRUE) {
         $message="";
@@ -351,20 +542,49 @@ class Mysql extends Factory {
         return !is_null($this->base->id);
     }
 
-    public function save() {
-        if(is_null($this->base->id))
-            $this->insert();
+    public function save($obj=null) {
+        if(isset($obj)){
+             if(is_null($obj->id))
+            $this->insert($obj);
         else
-            $this->update();
+            $this->update($obj);
+        return $obj->id;
+        }
+        else{
+        if(is_null($this->base->id))
+            $this->insert($this->base);
+        else
+            $this->update($this->base);
         return $this->base->id;
+        }
     }
 
-    public function insert($cmd = 'INSERT INTO') {
+    public function insert($obj) {
         $db = Database::getDatabase();
-        $attributes=get_object_vars($this->base);
-        $table=strtolower(get_class($this->base));
+        $attributes=get_object_vars($obj);
+        $table=strtolower(get_class($obj));
         if(count( $attributes) == 0) return false;
+                 foreach($attributes as $k => $v){
+            if($v==null){
 
+                 unset ($attributes[$k]);
+            }
+            elseif(is_array($attributes[$k])){
+
+                foreach($attributes[$k] as $item){
+
+                    $this->save($item);
+                }
+                  unset($attributes[$k]);
+            }
+            elseif(is_object($attributes[$k])){
+
+                 $attributes[$k]=$this->save($attributes[$k]);
+                   
+            }
+
+         }
+        $cmd = 'INSERT INTO';
         $data = array();
         foreach($attributes as $k => $v)
             if(!is_null($v))
@@ -374,27 +594,48 @@ class Mysql extends Factory {
         $values = implode(',', $data);
 
         $db->query("$cmd `{$table}` ($columns) VALUES ($values)");
-        $this->base->id = $db->insertId();
-        return $this->base->id;
+        $obj->id = $db->insertId();
+        return $obj->id;
     }
 
     public function replace() {
         return $this->base->delete() && $this->base->insert();
     }
 
-    public function update() {
-        if(is_null($this->base->id)) return false;
+    public function update($obj) {
+        if(is_null($obj->id)) return false;
 
         $db = Database::getDatabase();
+        $attrib=get_object_vars($obj);
+        if(count($attrib) == 0) return;
+         foreach($attrib as $k => $v){
+            if($v==null){
+                 unset ($attrib[$k]);
+            }
+            elseif(is_array($attrib[$k])){
+              
+                foreach($attrib[$k] as $item){
+                    
+                    $this->save($item);
+                }
+                unset($attrib[$k]);
+            }
+            elseif(is_object($attrib[$k])){
 
-        if(count($this->base->columns) == 0) return;
+               $attrib[$k]= $this->save($attrib[$k]);
+                
+            }
 
-        $sql = "UPDATE {$this->base->tableName} SET ";
-        foreach($this->base->columns as $k => $v)
+         }
+        $table=strtolower(get_class($obj));
+      
+        $sql = "UPDATE `{$table}` SET ";
+        foreach($attrib as $k => $v)
             $sql .= "`$k`=" . $db->quote($v) . ',';
         $sql[strlen($sql) - 1] = ' ';
-
-        $sql .= "WHERE `{$this->idColumnName}` = " . $db->quote($this->base->id);
+         
+        $sql .= "WHERE `{$this->idColumnName}` = " . $db->quote($obj->id);
+        
         $db->query($sql);
 
         return $db->affectedRows();
@@ -404,7 +645,7 @@ class Mysql extends Factory {
         if(is_null($this->base->id)) return false;
         $db = Database::getDatabase();
         $table=strtolower(get_class($this->base));
-        $db->query("DELETE FROM `{$table}` WHERE `{$this->base->idColumnName}` = :id: LIMIT 1", array('id' => $this->base->id));
+        $db->query("DELETE FROM `{$table}` WHERE `{$this->idColumnName}` = :id: LIMIT 1", array('id' => $this->base->id));
         return $db->affectedRows();
     }
 

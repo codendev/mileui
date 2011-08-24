@@ -15,26 +15,26 @@
  * @since		Version 1.0
  * @filesource
  */
+class Action_Block {
 
-class Base{
+    private $page;
+
+    public function  __construct($page) {
+
+        $this->page=$page;
+
+
+    }
+    public function header() {
+
+
+    }
+    public function sidebar() {
    
-    public $id;
-    
-
-    public function  __construct($name) {
-        $name::$me['id']= new Type('id','',true,11,'text');
     }
-    public function  __get($name) {
+    public function footer() {
+
 
     }
-    public function __set($name,$value){
-
-        
-    }
-    
-
-
-    
-
 }
 ?>

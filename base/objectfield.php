@@ -19,11 +19,13 @@ class ObjectField extends Base {
     //put your code here
     static $me;
     var $name;
+  
  
 
     function  __construct() {
 
         ObjectField::$me['name']= new Type('name','',true,255,'text');
+     
         parent::__construct($this);
     }
 

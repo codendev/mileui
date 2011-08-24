@@ -18,9 +18,13 @@
 class Privilege extends Base {
     //put your code here
     var $name;
+    var $group;
     
     function  __construct() {
-      
+        Privilege::$me['name']= new Type('name','',true,255,'text');
+        Privilege::$me['group']= new Reference('object','','object','group','onetomany');
+
+    
    }
 
 

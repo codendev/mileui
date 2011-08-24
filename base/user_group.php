@@ -15,26 +15,24 @@
  * @since		Version 1.0
  * @filesource
  */
-class User extends Base {
+class User_Group extends Base {
     //put your code here
-    static $me;
-    public $username;
-    public $password;
-    public $user_group;
+    public static $me;
+    public $user;
+    public $group;
+  
 
     public function  __construct() {
 
-        User::$me['username']= new Type('username','',true,255,'text');
-        User::$me['password']= new Type('password','',true,255,'sha');
-        User::$me['user_group']= new Reference('user_group','','user_group','user','onetomany');
-
+        User_Group::$me['group']= new Reference('group','','group','id','onetoone');
+        User_Group::$me['user']= new Reference('user','','user','id','onetoone');
+        
         parent::__construct($this);
 
     }
 
 
-    
-   
+
 
 
 }

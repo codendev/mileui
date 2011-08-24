@@ -22,45 +22,46 @@ class Action_Home {
     public function  __construct($page) {
 
         $this->page=$page;
+        $this->page->data["header"]=$this->page->block->create(array('action'=>'block','event'=>'header'));
+        $this->page->data["footer"]=$this->page->block->create(array('action'=>'block','event'=>'footer'));
+        $this->page->data["sidebar"]=$this->page->block->create(array('action'=>'block','event'=>'sidebar'));
        
+
+
     }
-      
-      
+
+
     public function index() {
-         
-        $this->page->data['header']=$this->page->block->create(array('obj'=>'home','mtd'=>'header'));
-        $this->page->data['footer']=$this->page->block->create(array('obj'=>'home','mtd'=>'footer'));
-        
-       
+     
+    
+
 
     }
     public function login() {
 
-        $this->page->data['header']=$this->page->block->create(array('obj'=>'home','mtd'=>'header'));
-        $this->page->data['footer']=$this->page->block->create(array('obj'=>'home','mtd'=>'footer'));
+      
         if(!empty($_POST)) {
             $usr= new User();
-            $usr->id=1;
-            $usr->username=$_POST["user"];
-            $this->page->set_state('user',$usr);
-            Util::redirect('home', 'index');
+            $dbObj=FactoryMethod::data('mysql', $usr);
+
+            $rs=$dbObj->filter(array('username'=>$_POST["user"],'password'=>$_POST["password"]))->fetch(2)->object_compile();
+
+            if(!empty($rs)) {
+                $usr->id=1;
+                $usr->username=$_POST["user"];
+                $this->page->set_state('user',$usr);
+                Util::redirect('home', 'index');
+            }
         }
         $this->page->view='view/home/login.php';
-        
+
 
     }
     public function logout() {
         $this->page->unset_state('user');
         Util::redirect('home', 'index');
     }
-    public function header() {
 
-
-    }
-    public function footer(){
-
-        
-    }
 
 }
 

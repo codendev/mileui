@@ -24,11 +24,11 @@ class Action implements IObserver {
      
     }
     private function dispatch($page) {
-
+       
         extract($page->args);
-        $ob='Action_'.ucfirst($obj);
+        $ob='Action_'.ucfirst($action);
         $ins=new $ob($page);
-        return $ins->$mtd();
+        return $ins->$event();
 
 
     }

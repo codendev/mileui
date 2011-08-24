@@ -16,25 +16,29 @@
  * @filesource
  */
 
-class Base{
-   
-    public $id;
-    
+class FallBack implements IObserver {
 
-    public function  __construct($name) {
-        $name::$me['id']= new Type('id','',true,11,'text');
-    }
-    public function  __get($name) {
+
+    public function update(IObservable $subject_in) {
+
+        $this->fallbacks($subject_in);
 
     }
-    public function __set($name,$value){
+
+  
+    public function fallbacks($page) {
 
         
+         if(empty($page->args)){
+             $page->args["action"]=SysDefault::get('action');
+             $page->args["event"]=SysDefault::get('event');
+           
+         }
+       
     }
-    
 
 
-    
+
 
 }
 ?>

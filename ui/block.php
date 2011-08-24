@@ -45,6 +45,7 @@ class Block implements IObservable {
     public function create($args){
           $this->args=$args;
           $this->notify();
+          $this->view=null;
           return $this->self;
     }
 

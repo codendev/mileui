@@ -33,8 +33,6 @@ function __autoload($class_name) {
 
         if ($handle = opendir('data/' . strtolower($class_name) .'/')) {
 
-
-            /* This is the correct way to loop over the directory. */
             while (false !== ($file = readdir($handle))) {
                 if($file!="."&&$file!="..") {
                     require 'data/' . strtolower($class_name) .'/'.strtolower($file);

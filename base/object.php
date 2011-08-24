@@ -19,15 +19,16 @@ class Object extends Base {
     //put your code here
     static $me;
     var $name;
-    var $group;
     var $objectfield;
+    var $object_group;
+
  
 
     function  __construct() {
 
         Object::$me['name']= new Type('name','',true,255,'text');
-        Object::$me['group']= new Reference('group','','group','id','onetoone');
-        Object::$me['objectfield']= new Reference('objectfield','','objectfield','id','onetomany');
+        Object::$me['objectfield']= new Reference('objectfield','','objectfield','object','onetomany');
+        Object::$me['object_group']= new Reference('object_group','','object_group','object','onetomany');
         parent::__construct($this);
     }
 

@@ -33,11 +33,16 @@ $usr= new User();
 
 $dbObj=FactoryMethod::data('mysql', $usr);
 
+
+
 $condition=array('user.id'=>'1','object.name'=>'product');
 
-$res=$dbObj->fetch(4)->compile();
+//$res=$dbObj->fetch(4)->compile();
+
+$res=$dbObj->fetch(4)->object_compile();
 foreach($res as $item){
-//var_dump($item); echo "<br><br><br>";
+            var_dump($item);
+
 }
 
 
