@@ -11,7 +11,7 @@
  * @author		codendev
  * @copyright   Copyright (c) 2011 - 2012, CodenDev.
  * @license		http://www.gnu.org/licenses/gpl.txt
- * @link		http://www.mileframework.com
+ * @link		http://www.codendev.com
  * @since		Version 1.0
  * @filesource
  */
