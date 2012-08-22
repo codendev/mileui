@@ -8,8 +8,8 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @package		MileFramework
- * @author		Shahrukh Hussain
- * @copyright           Copyright (c) 2011 - 2012, Abydeen Business Consulting.
+ * @author		codendev
+ * @copyright           Copyright (c) 2011 - 2012, CodenDev.
  * @license		http://www.gnu.org/licenses/gpl.txt
  * @link		http://www.mileframework.com
  * @since		Version 1.0

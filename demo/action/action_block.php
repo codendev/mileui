@@ -8,20 +8,33 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @package		MileFramework
- * @author		Shahrukh Hussain
- * @copyright           Copyright (c) 2011 - 2012, Abydeen Business Consulting.
+ * @author		codendev
+ * @copyright   Copyright (c) 2011 - 2012, CodenDev.
  * @license		http://www.gnu.org/licenses/gpl.txt
  * @link		http://www.mileframework.com
  * @since		Version 1.0
  * @filesource
  */
-abstract class Factory
-{
-    // The parameterized factory method
-     abstract function createEntity();
-     abstract function createRelation($relation);
-     abstract function createField($field,$property);
-   
-}
+class Action_Block {
 
+    private $page;
+
+    public function  __construct($page) {
+
+        $this->page=$page;
+
+
+    }
+    public function header() {
+
+
+    }
+    public function sidebar() {
+   
+    }
+    public function footer() {
+
+
+    }
+}
 ?>
