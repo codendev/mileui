@@ -26,6 +26,7 @@ class Action implements IObserver {
     private function dispatch($page) {
        
         extract($page->args);
+        var_dump($page->args);
         $ob='Action_'.ucfirst($action);
         $ins=new $ob($page);
         return $ins->$event();
